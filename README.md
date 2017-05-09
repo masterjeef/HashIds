@@ -6,7 +6,7 @@
 * Hard coded values for length checks (https://github.com/ullmark/hashids.net/issues/20)
 * Proper naming conventions for .NET
 
-# Hashids
+# HashIds
 A small .NET package to generate YouTube-like hashes from one or many numbers. 
 Use hashids when you do not want to expose your database ids to the user.
 
@@ -33,25 +33,14 @@ You don't have to store these hashes in the database, but can encrypt + decrypt 
 
 All integers need to be greater than or equal to zero.
 
-## Installation
-Install the package with [NuGet][]
-
-    Install-Package hashids.net
-
 ## Usage
-
-### Import namespace
-
-```C#
-using HashidsNet;
-```
 
 ### Encoding one number
 
 You can pass a unique salt value so your hashes differ from everyone else's. I use "**this is my salt**" as an example.
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 var hash = hashids.Encode(12345);
 ```
 
@@ -62,7 +51,7 @@ var hash = hashids.Encode(12345);
 If your id is stored as a `Int64` you need to use "EncodeLong".
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 var hash = hashids.EncodeLong(666555444333222L);
 ```
 
@@ -75,7 +64,7 @@ var hash = hashids.EncodeLong(666555444333222L);
 Notice during decoding, same salt value is used:
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 numbers = hashids.Decode("NkK9");
 ```
 
@@ -84,7 +73,7 @@ numbers = hashids.Decode("NkK9");
     [ 12345 ]
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 numbers = hashids.DecodeLong("KVO9yy1oO5j");
 ```
 
@@ -97,7 +86,7 @@ numbers = hashids.DecodeLong("KVO9yy1oO5j");
 Decoding will not work if salt is changed:
 
 ```C#
-var hashids = new Hashids("this is my pepper");
+var hashids = new HashIds("this is my pepper");
 numbers = hashids.Decode("NkK9");
 ```
 
@@ -119,7 +108,7 @@ var hash = hashids.Encode(683, 94108, 123, 5);
 ### Decoding is done the same way
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 var numbers = hashids.Decode("aBMswoO2UB3Sj")
 ```
 
@@ -132,7 +121,7 @@ var numbers = hashids.Decode("aBMswoO2UB3Sj")
 Here we encode integer 1, and set the minimum hash length to **8** (by default it's **0** -- meaning hashes will be the shortest possible length).
 
 ```C#
-var hashids = new Hashids("this is my salt", 8);
+var hashids = new HashIds("this is my salt", 8);
 var hash = hashids.Encode(1);
 ```
 
@@ -143,7 +132,7 @@ var hash = hashids.Encode(1);
 ### Decoding 
 
 ```C#
-var hashids = new Hashids("this is my salt", 8);
+var hashids = new HashIds("this is my salt", 8);
 var numbers = hashids.Decode("gB0NV05e");
 ```
 
@@ -156,7 +145,7 @@ var numbers = hashids.Decode("gB0NV05e");
 Here we set the alphabet to consist of: "abcdefghijkABCDEFGHIJK12345"
 
 ```C#
-var hashids = new Hashids("this is my salt", 0, "abcdefghijkABCDEFGHIJK12345")
+var hashids = new HashIds("this is my salt", 0, "abcdefghijkABCDEFGHIJK12345")
 var hash = hashids.Encode(1, 2, 3, 4, 5)
 ```
 
@@ -172,7 +161,7 @@ Having said that, this algorithm does try to make these hashes unguessable and u
 ### Repeating numbers
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 var hash = hashids.Encode(5, 5, 5, 5);
 ```
 
@@ -183,7 +172,7 @@ You don't see any repeating patterns that might show there's 4 identical numbers
 Same with incremented numbers:
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 var hash = hashids.Encode(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 ```
 
@@ -194,7 +183,7 @@ var hash = hashids.Encode(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 ### Incrementing number hashes:
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 
 hashids.Encode(1); // => NV
 hashids.Encode(2); // => 6m
@@ -206,7 +195,7 @@ hashids.Encode(5); // => rD
 ### Encoding using a HEX string
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 var hash = hashids.EncodeHex("DEADBEEF");
 ```
 
@@ -217,80 +206,10 @@ var hash = hashids.EncodeHex("DEADBEEF");
 ### Decoding to a HEX string
 
 ```C#
-var hashids = new Hashids("this is my salt");
+var hashids = new HashIds("this is my salt");
 var hex = hashids.DecodeHex("kRNrpKlJ");
 ```
 
 `hex` is now going to be:
 
     DEADBEEF
-
-## Changelog
-
-**1.2.2**
-- Accepted PR [#19](https://github.com/ullmark/hashids.net/pull/19) - We now only instantiate the HEX-connected Regexes if we use any of the HEX functions. This will speed up creation of "Hashids"-instances. It 
-is likely that most users doesn't use the HEX-functions.
-- Version tag added: `1.2.2`
-
-**1.2.1**
-- Accepted PR [#11](https://github.com/ullmark/hashids.net/pull/11)
-- Fixed issue [#15](https://github.com/ullmark/hashids.net/issues/15) Decoding strings that contain characters not in the alphabet will now return empty array. (To conform to behaviour in the js-library).
-- Fixed issue [#18](https://github.com/ullmark/hashids.net/issues/18) Encoding with a negative number will now return empty string. (To conform to behaviour in the js-library).
-- Version tag added: `1.2.1`
-- `README.md` updated
-
-**1.2.0**
-- .NET Core support. Sorry for the wait and thanks [haroldma](https://github.com/haroldma), 
-[mlafleur](https://github.com/mlafleur) and [lstyles](https://github.com/lstyles) for submitting pull requests.
-- Version tag added: `1.2.0`
-- `README.md` updated
-
-**1.1.2**
-- Fixed issue [#14](https://github.com/ullmark/hashids.net/issues/14) that caused HEX values to be encoded/decoded incorrectly.
-- Version tag added `1.1.2`
-
-**1.1.1**
-- Accepted PR [#12](https://github.com/ullmark/hashids.net/pull/12) that fixed an issue when encoding very many longs at the same time
-- `README.md` updated
-- Version tag added: `1.1.1`
-
-**1.1.0**
-
-- Added support for `long` via *new* functions to not introduce breaking changes.
-    - `EncodeLong` for encodes.
-	- `DecodeLong` for decodes.
-- Added interface `IHashids` for people who want an interface to work with.
-- Version tag added: `1.1.0`
-- `README.md` updated
-
-**1.0.1**
-
-- The .NET 4.0 version of the package used .NET 4.5 as build target. This was fixed and a new version was pushed to nuget. 
-
-**1.0.0**
-
-- Several public functions marked obsolete and renamed versions added, to be more appropriate:
-	- Function `Encrypt()` changed to `Encode()`
-	- Function `Decrypt()` changed to `Decode()`
-	- Function `EncryptHex()` changed to `EncodeHex()`
-	- Function `DecryptHex()` changed to `DecodeHex()`
-	
-	Hashids was designed to encode integers, primary ids at most. We've had several requests to encrypt sensitive data with Hashids and this is the wrong algorithm for that. So to encourage more appropriate use, `encrypt/decrypt` is being "downgraded" to `encode/decode`.
-
-- Version tag added: `1.0`
-- `README.md` updated
-
-**0.3.4**
-
-  - The public functions are now virtual and therefor can be mocked with a mocking library.
-
-**0.3.3**
-
-  - Rewrote the code to support the new hashing algorithm.
-  - Support for `EncryptHex` and `DecryptHex`
-
-**0.1.4**
-
-  - Initial version of the port.
-
-[Nuget]: http://nuget.org/
