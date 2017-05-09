@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Generate YouTube-like hashes from one or many numbers. Use hashids when you do not want to expose your database ids to the user.</Description>
+    <AssemblyTitle>Hashids.net</AssemblyTitle>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <VersionPrefix>1.2.2</VersionPrefix>
+    <TargetFrameworks>net40;net45;netstandard1.0</TargetFrameworks>
+    <AssemblyName>Hashids.net</AssemblyName>
+    <PackageId>Hashids.net</PackageId>
+    <PackageTags>ids;hash</PackageTags>
+    <PackageReleaseNotes>https://github.com/ullmark/hashids.net#changelog</PackageReleaseNotes>
+    <PackageIconUrl>https://raw.githubusercontent.com/ullmark/hashids.net/master/hashids.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/ullmark/hashids.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ullmark/hashids.net</RepositoryUrl>
+    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.0' ">1.6.0</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <DefineConstants>$(DefineConstants);NET</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.0' ">
+    <DefineConstants>$(DefineConstants);CORE</DefineConstants>
+  </PropertyGroup>
+
+</Project>
