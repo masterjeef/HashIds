@@ -2,6 +2,7 @@
 `This fork deviates from the original implementation of hashids, do not expect this version to be compatible with previous implemenations.`
 
 ## Why did I fork hashids.net?
+* Resolves issues that the original codebase is stuck with (due to backwards/cross-platform compatibility)
 * More opinionated codebase (throwing on bad args)
 * Hard coded values for length checks (https://github.com/ullmark/hashids.net/issues/20)
 * Proper naming conventions for .NET
