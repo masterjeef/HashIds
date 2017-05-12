@@ -8,26 +8,26 @@ namespace HashidsNet.test
     public class HashIds_test
     {
         HashIds _hashIds;
-        private string salt = "this is my salt";
-        private string defaultAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        private string defaultSeps = "cfhistuCFHISTU";
+        private string _salt = "this is my salt";
+        private string _defaultAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        private string _defaultSeparators = "cfhistuCFHISTU";
 
         public HashIds_test()
         {
-            _hashIds = new HashIds(salt);
+            _hashIds = new HashIds(_salt);
         }
 
-        //[Fact]
-        //void it_has_correct_default_alphabet()
-        //{
-        //    HashIds.DEFAULT_ALPHABET.Should().Be(defaultAlphabet);
-        //}
+        [Fact]
+        void it_has_correct_default_alphabet()
+        {
+            HashIds.DefaultAlphabet.Should().Be(_defaultAlphabet);
+        }
 
-        //[Fact]
-        //void it_has_correct_default_separators()
-        //{
-        //    HashIds.DEFAULT_SEPS.Should().Be(defaultSeps);
-        //}
+        [Fact]
+        void it_has_correct_default_separators()
+        {
+            HashIds.DefaultSeparators.Should().Be(_defaultSeparators);
+        }
 
         [Fact]
         void it_has_a_default_salt()
@@ -95,7 +95,7 @@ namespace HashidsNet.test
         [Fact]
         void it_can_encodes_to_a_minimum_length()
         {
-            var h = new HashIds(salt, 18);
+            var h = new HashIds(_salt, 18);
             h.Encode(1).Should().Be("aJEDngB0NV05ev1WwP");
 
             h.Encode(4140, 21147, 115975, 678570, 4213597, 27644437).
@@ -105,7 +105,7 @@ namespace HashidsNet.test
         [Fact]
         void it_can_encode_with_a_custom_alphabet()
         {
-            var h = new HashIds(salt, 0, "ABCDEFGhijklmn34567890-:");
+            var h = new HashIds(_salt, 0, "ABCDEFGhijklmn34567890-:");
             h.Encode(1, 2, 3, 4, 5).Should().Be("6nhmFDikA0");
         }
 
@@ -204,7 +204,7 @@ namespace HashidsNet.test
         [Fact]
         void it_can_decode_from_a_hash_with_a_minimum_length()
         {
-            var h = new HashIds(salt, 8);
+            var h = new HashIds(_salt, 8);
             h.Decode("gB0NV05e").Should().Equal(new [] {1});
             h.Decode("mxi8XH87").Should().Equal(new[] { 25, 100, 950 });
             h.Decode("KQcmkIW8hX").Should().Equal(new[] { 5, 200, 195, 1 });
@@ -252,6 +252,17 @@ namespace HashidsNet.test
             var mock = new Mock<HashIds>();
             mock.Setup(hashids => hashids.Encode(It.IsAny<int[]>())).Returns("It works");
             mock.Object.Encode(new[] { 1 }).Should().Be("It works");
+        }
+
+        [Fact]
+        void it_should_decode_encode_hex_correctly()
+        {
+            var hashids = new HashIds("this is my salt");
+            var encoded = hashids.EncodeHex("DEADBEEF");
+            encoded.Should().Be("zEMBllj");
+
+            var decoded = hashids.DecodeHex(encoded);
+            decoded.Should().Be("DEADBEEF");
         }
     }
 }

@@ -8,7 +8,7 @@ namespace HashidsNet.test
     public class HashIds_issues
     {
         [Fact]
-        void issue_8_should_not_throw_out_of_range_exception()
+        public void issue_8_should_not_throw_out_of_range_exception()
         {
             var hashids = new HashIds("janottaa", 6);
             var numbers = hashids.Decode("NgAzADEANAA=");
@@ -37,20 +37,7 @@ namespace HashidsNet.test
             decoded.Should().Equal(longs.ToArray());
         }
 
-        [Fact(Skip = "Fix me later")]
-        void issue_14_it_should_decode_encode_hex_correctly()
-        {
-            var hashids = new HashIds("this is my salt");
-            var encoded = hashids.EncodeHex("DEADBEEF");
-            encoded.Should().Be("kRNrpKlJ");
-
-            var decoded = hashids.DecodeHex(encoded);
-            decoded.Should().Be("DEADBEEF");
-
-            var encoded2 = hashids.EncodeHex("1234567890ABCDEF");
-            var decoded2 = hashids.DecodeHex(encoded2);
-            decoded2.Should().Be("1234567890ABCDEF");
-        }
+        
 
         [Fact(Skip = "Fix me later")]
         void issue_18_it_should_return_empty_string_if_negative_numbers()

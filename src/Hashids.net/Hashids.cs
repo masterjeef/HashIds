@@ -11,8 +11,8 @@ namespace HashidsNet
     /// </summary>
     public sealed class HashIds : IHashIds
     {
-        private const string DefaultAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        private const string DefaultSeparators = "cfhistuCFHISTU";
+        public const string DefaultAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        public const string DefaultSeparators = "cfhistuCFHISTU";
 
         private const int MinAlphabetLength = 2;
         private const double SepDiv = 3.5;

@@ -201,13 +201,13 @@ var hash = hashids.EncodeHex("DEADBEEF");
 
 `hash` is now going to be: 
 
-    kRNrpKlJ
+    zEMBllj
 
 ### Decoding to a HEX string
 
 ```C#
 var hashids = new HashIds("this is my salt");
-var hex = hashids.DecodeHex("kRNrpKlJ");
+var hex = hashids.DecodeHex("zEMBllj");
 ```
 
 `hex` is now going to be:
