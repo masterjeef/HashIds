@@ -112,8 +112,9 @@ namespace HashidsNet.test
         
 
         [Fact]
-        void it_does_not_produce_similarities_between_incrementing_number_hashes()
+        void Incrementing_number_hashes_are_not_similar()
         {
+            // need a better way to test this /:
             _hashIds.Encode(1).Should().Be("NV");
             _hashIds.Encode(2).Should().Be("6m");
             _hashIds.Encode(3).Should().Be("yD");
@@ -121,23 +122,26 @@ namespace HashidsNet.test
             _hashIds.Encode(5).Should().Be("rD");
         }
 
-        [Fact(Skip = "Fix me later")]
-        void Encode_hex_string()
+        [Theory]
+        [InlineData("FA", "l5l")]
+        [InlineData("26dd", "rD7D")]
+        [InlineData("FF1A", "lB8P")]
+        [InlineData("12abC", "3mve")]
+        [InlineData("185b0", "n29yE")]
+        [InlineData("17b8d", "orxZN")]
+        [InlineData("1d7f21dd38", "9e45pXZa")]
+        [InlineData("20015111d", "ba19nW4N")]
+        void Encode_hex_string(string hex, string expected)
         {
-            _hashIds.EncodeHex("FA").Should().Be("lzY");
-            _hashIds.EncodeHex("26dd").Should().Be("MemE");
-            _hashIds.EncodeHex("FF1A").Should().Be("eBMrb");
-            _hashIds.EncodeHex("12abC").Should().Be("D9NPE");
-            _hashIds.EncodeHex("185b0").Should().Be("9OyNW");
-            _hashIds.EncodeHex("17b8d").Should().Be("MRWNE");
-            _hashIds.EncodeHex("1d7f21dd38").Should().Be("4o6Z7KqxE");
-            _hashIds.EncodeHex("20015111d").Should().Be("ooweQVNB");
+            _hashIds.EncodeHex(hex).Should().Be(expected);
         }
 
-        [Fact(Skip = "Fix me later")]
-        void it_returns_an_empty_string_if_passed_non_hex_string()
+        [Fact]
+        void Should_throw_on_non_hex_string()
         {
-            _hashIds.EncodeHex("XYZ123").Should().Be(string.Empty);
+            Action act = () =>_hashIds.EncodeHex("XYZ123");
+
+            act.ShouldThrow<ArgumentException>();
         }
 
         [Fact]
