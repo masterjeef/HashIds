@@ -55,7 +55,7 @@ namespace HashidsNet.test
         [InlineData(666555444333222L, "KVO9yy1oO5j")]
         [InlineData(12345678901112L, "4bNP1L26r")]
         [InlineData(Int64.MaxValue, "jvNx4BjM5KYjv")]
-        void Encode_a_single_long(long value, string expected)
+        public void Encode_a_single_long(long value, string expected)
         {
             _hashIds.EncodeLong(value).Should().Be(expected);
         }
@@ -70,19 +70,19 @@ namespace HashidsNet.test
         [InlineData("kRHnurhptKcjIDTWC3sx", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)]
         [InlineData("3RoSDhelEyhxRsyWpCx5t1ZK", 547, 31, 241271, 311, 31397, 1129, 71129)]
         [InlineData("p2xkL3CK33JjcrrZ8vsw4YRZueZX9k", 21979508, 35563591, 57543099, 93106690, 150649789)]
-        void Encode_a_list_of_numbers(string expected, params int [] numbers)
+        public void Encode_a_list_of_numbers(string expected, params int [] numbers)
         {
             _hashIds.Encode(numbers).Should().Be(expected);
         }
 
         [Fact]
-        void Encode_a_list_of_longs()
+        public void Encode_a_list_of_longs()
         {
             _hashIds.EncodeLong(666555444333222L, 12345678901112L).Should().Be("mPVbjj7yVMzCJL215n69");
         }
 
         [Fact]
-        void Should_throw_if_no_numbers()
+        public void Should_throw_if_no_numbers()
         {
             Action act = () => _hashIds.Encode();
 
@@ -92,7 +92,7 @@ namespace HashidsNet.test
         [Theory]
         [InlineData(1)]
         [InlineData(4140, 21147, 115975, 678570, 4213597, 27644437)]
-        void Encode_to_a_minimum_length(params int[] numbers)
+        public void Encode_to_a_minimum_length(params int[] numbers)
         {
             const int minLength = 18;
             var hashIds = new HashIds(_salt, minLength);
@@ -103,7 +103,7 @@ namespace HashidsNet.test
 
         [Theory]
         [InlineData("6nhmFDikA0", "ABCDEFGhijklmn34567890-:", 1, 2, 3, 4, 5)]
-        void Encode_with_a_custom_alphabet(string expected, string alphabet, params int[] numbers)
+        public void Encode_with_a_custom_alphabet(string expected, string alphabet, params int[] numbers)
         {
             var hashIds = new HashIds(_salt, 0, alphabet);
 
@@ -112,7 +112,7 @@ namespace HashidsNet.test
         
 
         [Fact]
-        void Incrementing_number_hashes_are_not_similar()
+        public void Incrementing_number_hashes_are_not_similar()
         {
             // need a better way to test this /:
             _hashIds.Encode(1).Should().Be("NV");
@@ -131,116 +131,115 @@ namespace HashidsNet.test
         [InlineData("17b8d", "orxZN")]
         [InlineData("1d7f21dd38", "9e45pXZa")]
         [InlineData("20015111d", "ba19nW4N")]
-        void Encode_hex_string(string hex, string expected)
+        public void Encode_hex_string(string hex, string expected)
         {
             _hashIds.EncodeHex(hex).Should().Be(expected);
         }
 
         [Fact]
-        void Should_throw_on_non_hex_string()
+        public void Should_throw_on_non_hex_string()
         {
             Action act = () =>_hashIds.EncodeHex("XYZ123");
 
             act.ShouldThrow<ArgumentException>();
         }
 
-        [Fact]
-        void it_decodes_an_encoded_number()
+        [Theory]
+        [InlineData("NkK9", 12345)]
+        [InlineData("5O8yp5P", 666555444)]
+        [InlineData("Wzo", 1337)]
+        [InlineData("DbE", 808)]
+        [InlineData("yj8", 303)]
+        public void Should_decode_an_encoded_number(string encoded, params int [] decoded)
         {
-            _hashIds.Decode("NkK9").Should().Equal(new [] { 12345 });
-            _hashIds.Decode("5O8yp5P").Should().Equal(new [] { 666555444 });
-
-            _hashIds.Decode("Wzo").Should().Equal(new [] { 1337 });
-            _hashIds.Decode("DbE").Should().Equal(new [] { 808 });
-            _hashIds.Decode("yj8").Should().Equal(new[] { 303 });
+            _hashIds.Decode(encoded).Should().Equal(decoded);
         }
 
-        [Fact]
-        void it_decodes_an_encoded_long()
+        [Theory]
+        [InlineData("NV", 1L)]
+        [InlineData("21OjjRK", 2147483648L)]
+        [InlineData("D54yen6", 4294967296L)]
+        [InlineData("KVO9yy1oO5j", 666555444333222L)]
+        [InlineData("4bNP1L26r", 12345678901112L)]
+        [InlineData("jvNx4BjM5KYjv", Int64.MaxValue)]
+        [InlineData("mPVbjj7yVMzCJL215n69", 666555444333222L, 12345678901112L)]
+        public void Should_decode_an_encoded_long(string encoded, params long[] decoded)
         {
-            _hashIds.DecodeLong("NV").Should().Equal(new[] { 1L });
-            _hashIds.DecodeLong("21OjjRK").Should().Equal(new[] { 2147483648L });
-            _hashIds.DecodeLong("D54yen6").Should().Equal(new[] { 4294967296L });
-
-            _hashIds.DecodeLong("KVO9yy1oO5j").Should().Equal(new[] { 666555444333222L });
-            _hashIds.DecodeLong("4bNP1L26r").Should().Equal(new[] { 12345678901112L });
-            _hashIds.DecodeLong("jvNx4BjM5KYjv").Should().Equal(new[] { Int64.MaxValue });
+            _hashIds.DecodeLong(encoded).Should().Equal(decoded);
         }
 
-        [Fact]
-        void it_decodes_a_list_of_encoded_numbers()
+        [Theory]
+        [InlineData("1gRYUwKxBgiVuX", 66655, 5444333, 2, 22)]
+        [InlineData("aBMswoO2UB3Sj", 683, 94108, 123, 5)]
+        [InlineData("jYhp", 3, 4)]
+        [InlineData("k9Ib", 6, 5)]
+        [InlineData("EMhN", 31, 41)]
+        [InlineData("glSgV", 13, 89)]
+        public void Should_decode_a_list_of_encoded_numbers(string encoded, params int[] decoded)
         {
-            _hashIds.Decode("1gRYUwKxBgiVuX").Should().Equal(new [] { 66655,5444333,2,22 });
-            _hashIds.Decode("aBMswoO2UB3Sj").Should().Equal(new [] { 683, 94108, 123, 5 });
-
-            _hashIds.Decode("jYhp").Should().Equal(new [] { 3, 4 });
-            _hashIds.Decode("k9Ib").Should().Equal(new [] { 6, 5 });
-
-            _hashIds.Decode("EMhN").Should().Equal(new [] { 31, 41 });
-            _hashIds.Decode("glSgV").Should().Equal(new[] { 13, 89 });
+            _hashIds.Decode(encoded).Should().Equal(decoded);
         }
-
+        
         [Fact]
-        void it_decodes_a_list_of_longs()
-        {
-            _hashIds.DecodeLong("mPVbjj7yVMzCJL215n69").Should().Equal(new[] { 666555444333222L, 12345678901112L });
-        }
-
-        [Fact]
-        void it_does_not_decode_with_a_different_salt()
+        // TODO: this should probably throw
+        public void Should_not_decode_with_a_different_salt()
         {
             var peppers = new HashIds("this is my pepper");
             _hashIds.Decode("NkK9").Should().Equal(new []{ 12345 });
             peppers.Decode("NkK9").Should().Equal(new int [0]);
         }
 
-        [Fact]
-        void it_can_decode_from_a_hash_with_a_minimum_length()
+        [Theory]
+        [InlineData("gB0NV05e", 1)]
+        [InlineData("mxi8XH87", 25, 100, 950)]
+        [InlineData("KQcmkIW8hX", 5, 200, 195, 1)]
+        public void Should_decode_from_a_hash_with_a_minimum_length(string encoded, params int [] decoded)
         {
-            var h = new HashIds(_salt, 8);
-            h.Decode("gB0NV05e").Should().Equal(new [] {1});
-            h.Decode("mxi8XH87").Should().Equal(new[] { 25, 100, 950 });
-            h.Decode("KQcmkIW8hX").Should().Equal(new[] { 5, 200, 195, 1 });
+            const int minLength = 8;
+            var h = new HashIds(_salt, minLength);
+            h.Decode(encoded).Should().Equal(decoded);
         }
 
-        [Fact(Skip = "Fix me later")]
-        void it_decode_an_encoded_number()
+        [Theory]
+        [InlineData("lzY", "1FA")]
+        [InlineData("eBMrb", "1FF1A")]
+        [InlineData("D9NPE", "112ABC")]
+
+        public void Should_decode_hex(string encodedHex, string decodedHex)
         {
-            _hashIds.DecodeHex("lzY").Should().Be("FA");
-            _hashIds.DecodeHex("eBMrb").Should().Be("FF1A");
-            _hashIds.DecodeHex("D9NPE").Should().Be("12ABC");
+            _hashIds.DecodeHex(encodedHex).Should().Be(decodedHex);
         }
 
         [Fact]
-        void it_raises_an_argument_null_exception_when_alphabet_is_null()
+        public void Should_raise_argument_null_exception_when_alphabet_is_null()
         {
             Action invocation = () => new HashIds(alphabet: null);
             invocation.ShouldThrow<ArgumentNullException>();
         }
 
         [Fact(Skip = "Fix me later")]
-        void it_raises_an_argument_null_exception_if_alphabet_contains_less_than_4_unique_characters()
+        public void Should_raise_an_argument_null_exception_if_alphabet_contains_less_than_4_unique_characters()
         {
             Action invocation = () => new HashIds(alphabet: "aadsss");
             invocation.ShouldThrow<ArgumentException>();
         }
 
         [Fact]
-        void it_encodes_and_decodes_numbers_starting_with_0()
+        public void Should_encode_and_decode_numbers_starting_with_0()
         {
             var hash = _hashIds.Encode(0, 1, 2);
             _hashIds.Decode(hash).Should().Equal(new[] { 0, 1, 2 });
         }
 
         [Fact]
-        void it_encodes_and_decodes_numbers_ending_with_0()
+        public void Should_encode_and_decode_numbers_ending_with_0()
         {
             var hash = _hashIds.Encode(1, 2, 0);
             _hashIds.Decode(hash).Should().Equal(new[] { 1, 2, 0 });
         }
 
         [Fact(Skip = "Fix me later")]
-        void our_public_methods_can_be_mocked()
+        public void Public_methods_can_be_mocked()
         {
             var mock = new Mock<HashIds>();
             mock.Setup(hashids => hashids.Encode(It.IsAny<int[]>())).Returns("It works");
@@ -248,7 +247,7 @@ namespace HashidsNet.test
         }
 
         [Fact]
-        void it_should_decode_encode_hex_correctly()
+        public void Should_decode_encode_DEADBEEF_correctly()
         {
             var hashids = new HashIds("this is my salt");
             var encoded = hashids.EncodeHex("DEADBEEF");
