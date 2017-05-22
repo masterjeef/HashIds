@@ -18,109 +18,98 @@ namespace HashidsNet.test
         }
 
         [Fact]
-        void it_has_correct_default_alphabet()
+        public void Default_alphabet_should_be_correct()
         {
             HashIds.DefaultAlphabet.Should().Be(_defaultAlphabet);
         }
 
         [Fact]
-        void it_has_correct_default_separators()
+        public void Default_separators_should_be_correct()
         {
             HashIds.DefaultSeparators.Should().Be(_defaultSeparators);
         }
 
         [Fact]
-        void it_has_a_default_salt()
+        public void Default_salt_should_be_correct()
         {
             new HashIds().Encode(1,2,3).Should().Be("o2fXhV");
         }
 
-        [Fact]
-        void it_encodes_a_single_number()
+        [Theory]
+        [InlineData(1, "NV")]
+        [InlineData(22, "K4")]
+        [InlineData(333, "OqM")]
+        [InlineData(9999, "kQVg")]
+        [InlineData(123000, "58LzD")]
+        [InlineData(456000000, "5gn6mQP")]
+        [InlineData(987654321, "oyjYvry")]
+        public void Encode_single_number(int value, string expected)
         {
-            _hashIds.Encode(1).Should().Be("NV");
-            _hashIds.Encode(22).Should().Be("K4");
-            _hashIds.Encode(333).Should().Be("OqM");
-            _hashIds.Encode(9999).Should().Be("kQVg");
-            _hashIds.Encode(123000).Should().Be("58LzD");
-            _hashIds.Encode(456000000).Should().Be("5gn6mQP");
-            _hashIds.Encode(987654321).Should().Be("oyjYvry");
+            _hashIds.Encode(value).Should().Be(expected);
+        }
 
+        [Theory]
+        [InlineData(1L, "NV")]
+        [InlineData(2147483648L, "21OjjRK")]
+        [InlineData(4294967296L, "D54yen6")]
+        [InlineData(666555444333222L, "KVO9yy1oO5j")]
+        [InlineData(12345678901112L, "4bNP1L26r")]
+        [InlineData(Int64.MaxValue, "jvNx4BjM5KYjv")]
+        void Encode_a_single_long(long value, string expected)
+        {
+            _hashIds.EncodeLong(value).Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("laHquq", 1, 2, 3)]
+        [InlineData("44uotN", 2, 4, 6)]
+        [InlineData("97Jun", 99, 25)]
+        [InlineData("1Wc8cwcE", 5, 5, 5, 5)]
+        [InlineData("7xKhrUxm", 1337, 42, 314)]
+        [InlineData("aBMswoO2UB3Sj", 683, 94108, 123, 5)]
+        [InlineData("kRHnurhptKcjIDTWC3sx", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)]
+        [InlineData("3RoSDhelEyhxRsyWpCx5t1ZK", 547, 31, 241271, 311, 31397, 1129, 71129)]
+        [InlineData("p2xkL3CK33JjcrrZ8vsw4YRZueZX9k", 21979508, 35563591, 57543099, 93106690, 150649789)]
+        void Encode_a_list_of_numbers(string expected, params int [] numbers)
+        {
+            _hashIds.Encode(numbers).Should().Be(expected);
         }
 
         [Fact]
-        void it_encodes_a_single_long()
-        {
-            _hashIds.EncodeLong(1L).Should().Be("NV");
-            _hashIds.EncodeLong(2147483648L).Should().Be("21OjjRK");
-            _hashIds.EncodeLong(4294967296L).Should().Be("D54yen6");
-
-            _hashIds.EncodeLong(666555444333222L).Should().Be("KVO9yy1oO5j");
-            _hashIds.EncodeLong(12345678901112L).Should().Be("4bNP1L26r");
-            _hashIds.EncodeLong(Int64.MaxValue).Should().Be("jvNx4BjM5KYjv");
-        }
-
-        [Fact]
-        void it_encodes_a_list_of_numbers()
-        {
-            _hashIds.Encode(1,2,3).Should().Be("laHquq");
-            _hashIds.Encode(2,4,6).Should().Be("44uotN");
-            _hashIds.Encode(99,25).Should().Be("97Jun");
-
-            _hashIds.Encode(1337,42,314).
-              Should().Be("7xKhrUxm");
-
-            _hashIds.Encode(683, 94108, 123, 5).
-              Should().Be("aBMswoO2UB3Sj");
-
-            _hashIds.Encode(547, 31, 241271, 311, 31397, 1129, 71129).
-              Should().Be("3RoSDhelEyhxRsyWpCx5t1ZK");
-
-            _hashIds.Encode(21979508, 35563591, 57543099, 93106690, 150649789).
-              Should().Be("p2xkL3CK33JjcrrZ8vsw4YRZueZX9k");
-        }
-
-        [Fact]
-        void it_encodes_a_list_of_longs()
+        void Encode_a_list_of_longs()
         {
             _hashIds.EncodeLong(666555444333222L, 12345678901112L).Should().Be("mPVbjj7yVMzCJL215n69");
         }
 
-        [Fact(Skip = "Fix me later")]
-        void it_returns_an_empty_string_if_no_numbers()
-        {
-            _hashIds.Encode().Should().Be(string.Empty);
-        }
-
         [Fact]
-        void it_can_encodes_to_a_minimum_length()
+        void Should_throw_if_no_numbers()
         {
-            var h = new HashIds(_salt, 18);
-            h.Encode(1).Should().Be("aJEDngB0NV05ev1WwP");
+            Action act = () => _hashIds.Encode();
 
-            h.Encode(4140, 21147, 115975, 678570, 4213597, 27644437).
-                Should().Be("pLMlCWnJSXr1BSpKgqUwbJ7oimr7l6");
+            act.ShouldThrow<ArgumentException>();
         }
 
-        [Fact]
-        void it_can_encode_with_a_custom_alphabet()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(4140, 21147, 115975, 678570, 4213597, 27644437)]
+        void Encode_to_a_minimum_length(params int[] numbers)
         {
-            var h = new HashIds(_salt, 0, "ABCDEFGhijklmn34567890-:");
-            h.Encode(1, 2, 3, 4, 5).Should().Be("6nhmFDikA0");
+            const int minLength = 18;
+            var hashIds = new HashIds(_salt, minLength);
+
+            var result = hashIds.Encode(numbers);
+            result.Length.Should().BeGreaterOrEqualTo(18);
         }
 
-        [Fact]
-        void it_does_not_produce_repeating_patterns_for_identical_numbers()
+        [Theory]
+        [InlineData("6nhmFDikA0", "ABCDEFGhijklmn34567890-:", 1, 2, 3, 4, 5)]
+        void Encode_with_a_custom_alphabet(string expected, string alphabet, params int[] numbers)
         {
-            _hashIds.Encode(5, 5, 5, 5).Should().Be("1Wc8cwcE");
-        }
+            var hashIds = new HashIds(_salt, 0, alphabet);
 
-        [Fact]
-        void it_does_not_produce_repeating_patterns_for_incremented_numbers()
-        {
-            _hashIds.Encode(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).
-                Should().Be("kRHnurhptKcjIDTWC3sx");
+            hashIds.Encode(numbers).Should().Be(expected);
         }
+        
 
         [Fact]
         void it_does_not_produce_similarities_between_incrementing_number_hashes()
@@ -133,7 +122,7 @@ namespace HashidsNet.test
         }
 
         [Fact(Skip = "Fix me later")]
-        void it_encode_hex_string()
+        void Encode_hex_string()
         {
             _hashIds.EncodeHex("FA").Should().Be("lzY");
             _hashIds.EncodeHex("26dd").Should().Be("MemE");
