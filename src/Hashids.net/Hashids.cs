@@ -329,12 +329,15 @@ namespace HashidsNet
         {
             long number = 0;
 
-            for (var i = 0; i < input.Length; i++)
+            checked
             {
-                var position = alphabet.IndexOf(input[i]);
-                number += (long)(position * Math.Pow(alphabet.Length, input.Length - i - 1));
+                for (var i = 0; i < input.Length; i++)
+                {
+                    var position = alphabet.IndexOf(input[i]);
+                    number += (long)(position * Math.Pow(alphabet.Length, input.Length - i - 1));
+                }
             }
-
+            
             return number;
         }
 
@@ -346,7 +349,7 @@ namespace HashidsNet
             }
 
             var alphabet = new string(_alphabet.ToCharArray());
-            var ret = new List<long>();
+            var result = new List<long>();
             var i = 0;
 
             var hashBreakdown = _guardsRegex.Replace(hash, " ");
@@ -361,7 +364,7 @@ namespace HashidsNet
 
             if (hashBreakdown[0] == default(char))
             {
-                return ret.ToArray();
+                return result.ToArray();
             }
 
             var lottery = hashBreakdown[0];
@@ -375,15 +378,18 @@ namespace HashidsNet
                 var buffer = lottery + _salt + alphabet;
 
                 alphabet = ConsistentShuffle(alphabet, buffer.Substring(0, alphabet.Length));
-                ret.Add(UnHash(subHash, alphabet));
+
+                var unhashed = UnHash(subHash, alphabet);
+
+                result.Add(unhashed);
             }
 
-            if (EncodeLong(ret.ToArray()) != hash)
+            if (EncodeLong(result.ToArray()) != hash)
             {
-                ret.Clear();
+                throw new ArgumentException($"hash \"{hash}\" is incorrect!");
             }
 
-            return ret.ToArray();
+            return result.ToArray();
         }
 
         /// <summary>

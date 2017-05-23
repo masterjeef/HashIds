@@ -5,14 +5,14 @@ using Xunit;
 
 namespace HashidsNet.test
 {
-    public class HashIds_test
+    public class HashIdsFacts
     {
         HashIds _hashIds;
         private string _salt = "this is my salt";
         private string _defaultAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         private string _defaultSeparators = "cfhistuCFHISTU";
 
-        public HashIds_test()
+        public HashIdsFacts()
         {
             _hashIds = new HashIds(_salt);
         }
@@ -184,9 +184,13 @@ namespace HashidsNet.test
         // TODO: this should probably throw
         public void Should_not_decode_with_a_different_salt()
         {
+            var encoded = _hashIds.Encode(12345);
             var peppers = new HashIds("this is my pepper");
-            _hashIds.Decode("NkK9").Should().Equal(new []{ 12345 });
-            peppers.Decode("NkK9").Should().Equal(new int [0]);
+
+            Action act = () => peppers.Decode(encoded);
+
+            act.ShouldThrow<ArgumentException>();
+            //peppers.Decode("NkK9").Should().Equal(new int [0]);
         }
 
         [Theory]
