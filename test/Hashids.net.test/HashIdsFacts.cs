@@ -260,5 +260,15 @@ namespace HashidsNet.test
             var decoded = hashids.DecodeHex(encoded);
             decoded.Should().Be("DEADBEEF");
         }
+
+        [Fact]
+        void Should_throw_if_negative_numbers()
+        {
+            var hashids = new HashIds("this is my salt");
+
+            Action act = () => hashids.Encode(1, 4, 5, -3);
+
+            act.ShouldThrow<ArgumentException>();
+        }
     }
 }

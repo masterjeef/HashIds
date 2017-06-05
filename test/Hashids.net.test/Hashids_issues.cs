@@ -37,16 +37,6 @@ namespace HashidsNet.test
             decoded.Should().Equal(longs.ToArray());
         }
 
-        
-
-        [Fact(Skip = "Fix me later")]
-        void issue_18_it_should_return_empty_string_if_negative_numbers()
-        {
-            var hashids = new HashIds("this is my salt");
-            hashids.Encode(1, 4, 5, -3).Should().Be(string.Empty);
-            hashids.EncodeLong(4, 5, 2, -4).Should().Be(string.Empty);
-        }
-
         [Fact(Skip = "Fix me later")]
         void issue_15_it_should_return_emtpy_array_when_decoding_characters_missing_in_alphabet()
         {
